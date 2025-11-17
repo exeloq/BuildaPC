@@ -61,6 +61,12 @@
             "dev": "vite",
             "build": "vite build",
             "server": "node server.js",
-            "scraper": "node scraper-server.js"
+            "scraper": "node scraper-server.js",
+            "start": "node server.js",
+            "heroku-postbuild": "npm run build"
+      },
+      "engines": {
+            "node": ">=18.0.0",
+            "npm": ">=9.0.0"
       }
 }

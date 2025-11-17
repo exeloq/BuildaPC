@@ -1,9 +1,9 @@
 import { projectId, publicAnonKey } from './supabase/info';
 
-// Use local server for development, Supabase Edge Function for production
+// Use local server for development, same domain for production (Heroku deployment)
 const API_BASE = import.meta.env.DEV
   ? 'http://localhost:3002'
-  : `https://${projectId}.supabase.co/functions/v1/make-server-9488d537`;
+  : ''; // Empty string means same domain as frontend
 
 export interface Part {
   _id?: string;
@@ -49,14 +49,7 @@ export async function fetchParts(options?: {
   if (options?.skip) params.append('skip', options.skip.toString());
 
   try {
-    const headers: HeadersInit = {};
-    if (!import.meta.env.DEV) {
-      headers['Authorization'] = `Bearer ${publicAnonKey}`;
-    }
-
-    const response = await fetch(`${API_BASE}/parts?${params.toString()}`, {
-      headers,
-    });
+    const response = await fetch(`${API_BASE}/parts?${params.toString()}`);
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
@@ -78,14 +71,7 @@ export async function fetchParts(options?: {
 }
 
 export async function fetchPartById(id: string): Promise<Part> {
-  const headers: HeadersInit = {};
-  if (!import.meta.env.DEV) {
-    headers['Authorization'] = `Bearer ${publicAnonKey}`;
-  }
-
-  const response = await fetch(`${API_BASE}/parts/${id}`, {
-    headers,
-  });
+  const response = await fetch(`${API_BASE}/parts/${id}`);
 
   if (!response.ok) {
     throw new Error(`Failed to fetch part: ${response.statusText}`);
@@ -95,16 +81,11 @@ export async function fetchPartById(id: string): Promise<Part> {
 }
 
 export async function addPart(part: Omit<Part, '_id'>): Promise<{ success: boolean; id: string }> {
-  const headers: HeadersInit = {
-    'Content-Type': 'application/json',
-  };
-  if (!import.meta.env.DEV) {
-    headers['Authorization'] = `Bearer ${publicAnonKey}`;
-  }
-
   const response = await fetch(`${API_BASE}/parts`, {
     method: 'POST',
-    headers,
+    headers: {
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify(part),
   });
 
@@ -116,16 +97,11 @@ export async function addPart(part: Omit<Part, '_id'>): Promise<{ success: boole
 }
 
 export async function bulkAddParts(parts: Omit<Part, '_id'>[]): Promise<{ success: boolean; insertedCount: number }> {
-  const headers: HeadersInit = {
-    'Content-Type': 'application/json',
-  };
-  if (!import.meta.env.DEV) {
-    headers['Authorization'] = `Bearer ${publicAnonKey}`;
-  }
-
   const response = await fetch(`${API_BASE}/parts/bulk`, {
     method: 'POST',
-    headers,
+    headers: {
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({ parts }),
   });
 
@@ -137,16 +113,11 @@ export async function bulkAddParts(parts: Omit<Part, '_id'>[]): Promise<{ succes
 }
 
 export async function updatePart(id: string, part: Partial<Part>): Promise<{ success: boolean }> {
-  const headers: HeadersInit = {
-    'Content-Type': 'application/json',
-  };
-  if (!import.meta.env.DEV) {
-    headers['Authorization'] = `Bearer ${publicAnonKey}`;
-  }
-
   const response = await fetch(`${API_BASE}/parts/${id}`, {
     method: 'PUT',
-    headers,
+    headers: {
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify(part),
   });
 
@@ -158,14 +129,8 @@ export async function updatePart(id: string, part: Partial<Part>): Promise<{ suc
 }
 
 export async function deletePart(id: string): Promise<{ success: boolean }> {
-  const headers: HeadersInit = {};
-  if (!import.meta.env.DEV) {
-    headers['Authorization'] = `Bearer ${publicAnonKey}`;
-  }
-
   const response = await fetch(`${API_BASE}/parts/${id}`, {
     method: 'DELETE',
-    headers,
   });
 
   if (!response.ok) {
@@ -176,14 +141,7 @@ export async function deletePart(id: string): Promise<{ success: boolean }> {
 }
 
 export async function fetchCategories(): Promise<string[]> {
-  const headers: HeadersInit = {};
-  if (!import.meta.env.DEV) {
-    headers['Authorization'] = `Bearer ${publicAnonKey}`;
-  }
-
-  const response = await fetch(`${API_BASE}/categories`, {
-    headers,
-  });
+  const response = await fetch(`${API_BASE}/categories`);
 
   if (!response.ok) {
     throw new Error(`Failed to fetch categories: ${response.statusText}`);

@@ -4,9 +4,15 @@
 import { MongoClient, ObjectId } from 'mongodb';
 import { createServer } from 'http';
 import { parse } from 'url';
+import { readFileSync, existsSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 // Load environment variables
 import 'dotenv/config';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://avnorboev:carrotman33@cluster0.azsklpr.mongodb.net/?appName=Cluster0';
 const PORT = process.env.PORT || 3002;
@@ -48,7 +54,9 @@ const server = createServer(async (req, res) => {
   const parsedUrl = parse(req.url, true);
   const pathname = parsedUrl.pathname;
 
-  try {
+  // API routes
+  if (pathname.startsWith('/parts') || pathname.startsWith('/categories')) {
+    try {
     const client = await getMongoClient();
     const db = client.db('PCParts');
     const partsCollection = db.collection('parts');
@@ -193,15 +201,57 @@ const server = createServer(async (req, res) => {
       return;
     }
 
-    // 404
+    // API 404
     res.writeHead(404, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ error: 'Not found' }));
+    res.end(JSON.stringify({ error: 'API endpoint not found' }));
 
-  } catch (error) {
-    console.error('Error:', error);
-    res.writeHead(500, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ error: error.message }));
+    } catch (error) {
+      console.error('API Error:', error);
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: error.message }));
+    }
+    return;
   }
+
+  // Serve static files for all other routes
+  const distPath = join(__dirname, 'dist');
+
+  if (existsSync(distPath)) {
+    let filePath = join(distPath, pathname === '/' ? 'index.html' : pathname);
+
+    // If file doesn't exist, serve index.html for client-side routing
+    if (!existsSync(filePath)) {
+      filePath = join(distPath, 'index.html');
+    }
+
+    if (existsSync(filePath)) {
+      const ext = filePath.split('.').pop();
+      const contentTypes = {
+        'html': 'text/html',
+        'js': 'application/javascript',
+        'css': 'text/css',
+        'json': 'application/json',
+        'png': 'image/png',
+        'jpg': 'image/jpeg',
+        'jpeg': 'image/jpeg',
+        'gif': 'image/gif',
+        'svg': 'image/svg+xml',
+        'ico': 'image/x-icon',
+        'woff': 'font/woff',
+        'woff2': 'font/woff2',
+        'ttf': 'font/ttf',
+        'eot': 'application/vnd.ms-fontobject'
+      };
+
+      res.writeHead(200, { 'Content-Type': contentTypes[ext] || 'application/octet-stream' });
+      res.end(readFileSync(filePath));
+      return;
+    }
+  }
+
+  // Final fallback 404
+  res.writeHead(404, { 'Content-Type': 'text/plain' });
+  res.end('Not found');
 });
 
 server.listen(PORT, () => {
