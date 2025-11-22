@@ -7,11 +7,15 @@ interface CategoryCardProps {
   description: string;
   imageUrl: string;
   icon: React.ReactNode;
+  onClick?: () => void;
 }
 
-export function CategoryCard({ title, description, imageUrl, icon }: CategoryCardProps) {
+export function CategoryCard({ title, description, imageUrl, icon, onClick }: CategoryCardProps) {
   return (
-    <Card className="group overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300">
+    <Card
+      className="group overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300"
+      onClick={onClick}
+    >
       <div className="relative h-48 overflow-hidden bg-gray-100">
         <ImageWithFallback 
           src={imageUrl}

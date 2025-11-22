@@ -23,46 +23,46 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
             <span className="text-xl text-gray-900">PCBuilder</span>
           </button>
           
-          <nav className="hidden md:flex items-center gap-6">
-            <button 
+          <nav className="hidden md:flex items-center gap-2">
+            <button
               onClick={() => onNavigate("builder")}
-              className="relative text-gray-600 hover:text-gray-900 transition-all duration-300 hover:-translate-y-0.5 group"
-            >
-              <span className="relative">
-                Build Your PC
-                <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
-              </span>
-            </button>
-            <button 
-              onClick={() => onNavigate("browse")}
-              className={`relative transition-all duration-300 hover:-translate-y-0.5 group ${
-                currentPage === "browse" 
-                  ? "text-blue-600" 
-                  : "text-gray-600 hover:text-gray-900"
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                currentPage === "builder"
+                  ? "bg-blue-500 !text-white shadow-md"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
               }`}
             >
-              <span className="relative">
-                Browse Parts
-                <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
-              </span>
+              Build Your PC
             </button>
-            <button 
+            <button
+              onClick={() => onNavigate("browse")}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                currentPage === "browse"
+                  ? "bg-blue-500 !text-white shadow-md"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+              }`}
+            >
+              Browse Parts
+            </button>
+            <button
               onClick={() => onNavigate("prebuilt")}
-              className="relative text-gray-600 hover:text-gray-900 transition-all duration-300 hover:-translate-y-0.5 group"
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                currentPage === "prebuilt"
+                  ? "bg-blue-500 !text-white shadow-md"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+              }`}
             >
-              <span className="relative">
-                Pre-Built PCs
-                <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
-              </span>
+              Pre-Built PCs
             </button>
-            <button 
+            <button
               onClick={() => onNavigate("guides")}
-              className="relative text-gray-600 hover:text-gray-900 transition-all duration-300 hover:-translate-y-0.5 group"
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                currentPage === "guides"
+                  ? "bg-blue-500 !text-white shadow-md"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+              }`}
             >
-              <span className="relative">
-                Guides
-                <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 group-hover:w-full"></span>
-              </span>
+              Guides
             </button>
           </nav>
         </div>

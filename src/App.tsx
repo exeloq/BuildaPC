@@ -27,12 +27,15 @@ import {
 function HomePage({
   onNavigate,
   onAddToBuild,
+  onSelectCategory,
 }: {
   onNavigate: (page: string) => void;
   onAddToBuild: (components: BuildComponent[]) => void;
+  onSelectCategory: (category: string) => void;
 }) {
   const categories = [
     {
+      id: "cpu",
       title: "Processors (CPU)",
       description:
         "High-performance processors from Intel and AMD for every budget",
@@ -41,6 +44,7 @@ function HomePage({
       icon: <Cpu className="h-8 w-8" />,
     },
     {
+      id: "gpu",
       title: "Graphics Cards",
       description:
         "NVIDIA and AMD GPUs for gaming, rendering, and AI workloads",
@@ -49,6 +53,7 @@ function HomePage({
       icon: <Monitor className="h-8 w-8" />,
     },
     {
+      id: "ram",
       title: "Memory (RAM)",
       description:
         "DDR4 and DDR5 memory modules for optimal system performance",
@@ -57,6 +62,7 @@ function HomePage({
       icon: <MemoryStick className="h-8 w-8" />,
     },
     {
+      id: "motherboard",
       title: "Motherboards",
       description:
         "Quality motherboards with the latest chipsets and features",
@@ -65,6 +71,7 @@ function HomePage({
       icon: <Zap className="h-8 w-8" />,
     },
     {
+      id: "storage",
       title: "Storage",
       description:
         "SSDs and HDDs for fast boot times and massive storage capacity",
@@ -73,6 +80,7 @@ function HomePage({
       icon: <HardDrive className="h-8 w-8" />,
     },
     {
+      id: "cooling",
       title: "Cooling",
       description:
         "Air and liquid cooling solutions to keep your system running cool",
@@ -372,11 +380,16 @@ function HomePage({
 
   return (
     <>
-      <Hero />
+      <Hero onNavigate={onNavigate} />
 
       {/* Categories Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
+      <section className="relative py-20 bg-gradient-to-br from-blue-50 via-white to-cyan-50 overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute top-10 left-10 w-72 h-72 bg-blue-200/40 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-10 right-10 w-80 h-80 bg-cyan-200/40 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-100/30 rounded-full blur-3xl"></div>
+        </div>
+        <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-4xl mb-4 text-gray-900">
               Browse Components
@@ -395,6 +408,7 @@ function HomePage({
                 description={category.description}
                 imageUrl={category.imageUrl}
                 icon={category.icon}
+                onClick={() => onSelectCategory(category.id)}
               />
             ))}
           </div>
@@ -432,41 +446,42 @@ function HomePage({
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            {features.map((feature, index) => (
-              <div key={index} className="text-center">
-                <div className="flex justify-center mb-4">
-                  {feature.icon}
-                </div>
-                <h3 className="text-2xl mb-3 text-gray-900">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-600">
-                  {feature.description}
-                </p>
-              </div>
-            ))}
-          </div>
+      {/* Features & CTA Section */}
+      <section className="relative py-20 overflow-hidden">
+        {/* Colorful gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-yellow-400 via-green-400 to-blue-500">
+          {/* Light beam effect */}
+          <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-bl from-pink-500/30 via-transparent to-transparent"></div>
         </div>
-      </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-yellow-400 via-green-400 to-green-500 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl md:text-5xl font-black mb-6 drop-shadow-lg">
-            Ready to Build Your Dream PC?
-          </h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto text-gray-900 font-semibold drop-shadow-md">
-            Start selecting components now and create a custom
-            PC that's perfect for your needs
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="container mx-auto px-4 relative z-10">
+          {/* Features Glass Card */}
+          <div className="bg-white/20 backdrop-blur-md rounded-3xl p-8 mb-8 border border-white/30">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+              {features.map((feature, index) => (
+                <div key={index} className="text-center">
+                  <div className="flex justify-center mb-4">
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3 text-gray-900">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-700 text-sm">
+                    {feature.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* CTA Glass Card */}
+          <div className="bg-white/20 backdrop-blur-md rounded-3xl p-8 border border-white/30 text-center">
+            <p className="text-lg mb-6 text-gray-900 font-medium">
+              Start selecting components now and create a custom PC that's perfect for your needs
+            </p>
             <Button
               size="lg"
-              className="bg-blue-600 text-white hover:bg-blue-700 shadow-lg"
+              className="bg-blue-600 text-white hover:bg-blue-700 shadow-lg rounded-full !px-10 !py-3 text-base font-medium"
               onClick={() => onNavigate("builder")}
             >
               Start Building Now
@@ -682,6 +697,7 @@ export default function App() {
             <HomePage
               onNavigate={handleNavigate}
               onAddToBuild={handleAddPrebuiltToBuild}
+              onSelectCategory={handleSelectComponent}
             />
           </PageTransition>
         )}
